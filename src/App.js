@@ -3,7 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Pages/Home";
 import Signup from "./Pages/Signup";
 import Login from "./Pages/Login";
+import useAuth from "./hooks/useAuth";
 function App() {
+  const { auth } = useAuth();
+  console.log(auth);
   return (
     <Router>
       <Routes>
