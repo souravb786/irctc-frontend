@@ -21,7 +21,7 @@ function Login() {
     });
     if (result.status === 200) {
       const resdata = (await result).json();
-      setAuth(await resdata);
+      setAuth({ user: await resdata });
       navigate(from, { replace: true });
 
       // console.log(await resdata);
