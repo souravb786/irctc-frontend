@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const Header = () => {
-  const { auth } = useAuth();
+  const { setAuth, auth } = useAuth();
   return (
     <div className="w-full py-2 flex items-center justify-start shadow-sm">
       <div style={{ flex: 0.1 }} className="flex items-center justify-center">
@@ -30,8 +30,22 @@ const Header = () => {
           </div>
         )}
         {auth.user && (
-          <div className="absolute right-0 px-2 py-2 w-40 font-['Poppins'] rounded-full ml-2 mr-2 text-center hover:bg-blue-500 hover:text-white cursor-pointer select-none">
-            <Link to="/user">My Profile</Link>
+          <div className="absolute right-0  font-['Poppins'] w-1/3  flex items-center justify-end px-6">
+            <Link
+              to="/user"
+              className="px-2 py-2 w-30 rounded-full ml-2 mr-2 text-center hover:bg-blue-500 hover:text-white cursor-pointer select-none"
+            >
+              My Profile
+            </Link>
+            <button
+              onClick={() => {
+                alert("Do you really want to logout?");
+                setAuth({});
+              }}
+              className="px-2 py-2 w-20 ml-3 rounded-full hover:bg-blue-500 hover:text-white"
+            >
+              Logout
+            </button>
           </div>
         )}
       </div>

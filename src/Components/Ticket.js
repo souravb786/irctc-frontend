@@ -1,6 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import useAuth from "../hooks/useAuth";
 
 function Ticket() {
+  const { auth } = useAuth();
+  const [stations, setStations] = useState([]);
+  console.log(auth.user.accessToken);
+  useEffect(() => {
+    fetch("http://localhost:8000/api/user/station/getAllStation", {
+      headers: {
+        "Content-Type": "application/json",
+        access_token: `bearer:${auth.user.accessToken}`,
+        id: auth.user.user_id,
+      },
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => setStations(data));
+  }, [auth]);
+  console.log(stations);
   return (
     <form className="w-3/6 rounded-lg shadow-lg bg-white py-4 px-5 ml-10 mt-10">
       <div className="w-full flex items-center justify-center h-20">

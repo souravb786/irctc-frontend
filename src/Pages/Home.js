@@ -8,9 +8,13 @@ const Home = () => {
       <Header />
       <div className="w-full flex items-center justify-center flex-col">
         <Ticket />
-        <div className="w-full flex justify-center">
-          <button className="mr-2 ml-2">PNR STATUS</button>
-          <button className="mr-2 ml-2 fon">CHART/VACCANCY</button>
+        <div className="w-full flex justify-center mt-4">
+          <button className="mr-2 ml-2 font-['Poppins'] px-3 py-3 bg-blue-600 text-white rounded-md font-semibold space-x-1 active:bg-blue-500">
+            PNR STATUS
+          </button>
+          <button className="mr-2 ml-2 font-['Poppins'] px-3 py-3 bg-blue-600 text-white rounded-md font-semibold space-x-1 active:bg-blue-500">
+            CHART/VACCANCY
+          </button>
         </div>
       </div>
     </div>

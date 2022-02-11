@@ -3,6 +3,8 @@ import IRCTC from "../assets/Logo/IRCTC.png";
 import useAuth from "../hooks/useAuth";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { LoginSchema } from "../Components/Schemas";
+import { yupResolver } from "@hookform/resolvers/yup";
 function Login() {
   const { setAuth } = useAuth();
   const location = useLocation();
@@ -12,7 +14,7 @@ function Login() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm(yupResolver(LoginSchema));
   const onSubmit = async (data) => {
     const result = await fetch("http://localhost:8000/api/auth/login", {
       method: "POST",
@@ -44,20 +46,24 @@ function Login() {
         <input
           placeholder="Email"
           type="text"
-          {...register("email", { required: true })}
+          {...register("email")}
           className='px-5 py-5 rounded-md shadow-sm bg-blue-50 text-xl mb-4 w-full outline-blue-200 text-slate-600 font-["Poppins"]'
         />
-        {errors.email && errors.email.type === "required" && (
-          <span className="text-red-700 font-medium">* This is required</span>
+        {errors.email && (
+          <span className="text-red-700 font-medium">
+            {errors.email.message}
+          </span>
         )}
         <input
           placeholder="Password"
           type="password"
-          {...register("password", { required: true })}
+          {...register("password")}
           className='px-5 py-5 rounded-md shadow-sm bg-blue-50 text-xl mb-4 w-full outline-blue-200 text-slate-600 font-["Poppins"]'
         />
-        {errors.password && errors.password.type === "required" && (
-          <span className="text-red-700 font-medium">* This is required</span>
+        {errors.password && (
+          <span className="text-red-700 font-medium">
+            {errors.password.message}
+          </span>
         )}
         <input
           value={"Login"}
