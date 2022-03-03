@@ -39,8 +39,10 @@ const Header = () => {
             </Link>
             <button
               onClick={() => {
-                alert("Do you really want to logout?");
-                setAuth({});
+                var status = window.confirm("Do you really want to logout?");
+                if (status) {
+                  setAuth({});
+                }
               }}
               className="px-2 py-2 w-20 ml-3 rounded-full hover:bg-blue-500 hover:text-white"
             >

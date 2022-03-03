@@ -1,30 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import IRCTC from "../assets/Logo/IRCTC.png";
 import useAuth from "../hooks/useAuth";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "../Components/Schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
+// import { env } from "process";
 function Login() {
   const { setAuth } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [error, setError] = useState("");
   const from = location.state?.from?.pathname || "/";
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm(yupResolver(LoginSchema));
+  } = useForm({ resolver: yupResolver(LoginSchema) });
   const onSubmit = async (data) => {
-    const result = await fetch("http://localhost:8000/api/auth/login", {
+    const result = await fetch(`http://localhost:8000/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
     if (result.status === 200) {
       const resdata = (await result).json();
-      setAuth({ user: await resdata });
-      navigate(from, { replace: true });
+      console.log(resdata);
+      if ((await resdata).error.length > 0) {
+        setError((await resdata).error);
+      } else {
+        setError("");
+        setAuth({ user: await resdata });
+        navigate(from, { replace: true });
+      }
 
       // console.log(await resdata);
     }
@@ -78,6 +86,9 @@ function Login() {
             </span>
           </p>
         </div>
+        {error.length > 0 && (
+          <spna className="text-red-700 px-5 py-5 text-xl">{error}</spna>
+        )}
       </form>
     </div>
   );
