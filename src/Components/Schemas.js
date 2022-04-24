@@ -37,3 +37,14 @@ export const UpdateUserSchema = yup.object().shape({
     .max(9999999999),
   password: yup.string().required().min(8),
 });
+
+export const passengerDetails = yup.object().shape({
+  name: yup.string().min(3).max(40).required(),
+  age: yup.number().required().positive().integer().min(5).max(60),
+  gender: yup.string().required().min(1).max(7)
+})
+
+export const TicketDetails = yup.object().shape({
+  coach_id: yup.number().positive().integer().required(),
+  passengerNumber : yup.number().positive().integer().min(1),
+})

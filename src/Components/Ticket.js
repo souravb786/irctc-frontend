@@ -3,6 +3,7 @@ import useAuth from "../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ticketSchema } from "../Components/Schemas";
+import { useParams } from "react-router-dom";
 function Ticket({ setTrains }) {
   const {
     register,
@@ -11,6 +12,21 @@ function Ticket({ setTrains }) {
   } = useForm({ resolver: yupResolver(ticketSchema) });
   const { auth } = useAuth();
   const [stations, setStations] = useState([]);
+  const [source, setSource] = useState( -1)
+  const [destination, setDestination] = useState( -1)
+  const [sourceName, setSourceName] = useState("")
+  const [destinationName, setDestinationName] = useState("")
+  useEffect(()=> {
+    stations.forEach(ele => {
+      if(ele.STATION_ID == destination) setDestinationName(ele.STATION_NAME)
+    })
+  }, [destination])
+  useEffect(()=> {
+    stations.forEach(ele => {
+      if(ele.STATION_ID == source) setSourceName(ele.STATION_NAME)
+    })
+  }, [source])
+  
   useEffect(() => {
     console.log("Effect Called");
     fetch("http://localhost:8000/api/user/station/getAllStation", {
@@ -24,6 +40,7 @@ function Ticket({ setTrains }) {
       .then((res) => res.json())
       .then((data) => setStations(data));
   }, [auth]);
+
   const submitFun = async (data) => {
     const res = await fetch(
       `http://localhost:8000/api/user/train/getTrain/${data.source}/${data.destination}`,
@@ -35,24 +52,39 @@ function Ticket({ setTrains }) {
           id: auth.user.user_id,
         },
       }
-    );
-    setTrains(await res.json());
+      );
+      
+      stations.forEach(element => {
+        if(element.STATION_ID === data?.source)
+        {
+          setSource(element.STATION_NAME)
+        }
+        else if(element.STATION_ID === data?.destination) setDestination(element.STATION_NAME)  
+      });
+      
+    console.log(`Source: ${source}`);
+    console.log(`Destination: ${destination}`);
+    const Data = await res.json()   
+    setTrains(Data.map((item, idx) => {
+      return {...item, Source: sourceName, Destination: destinationName, source_id: source, destination_id : destination }
+    }));
     // console.log(await res.json());
   };
   return (
     <form
-      className="w-3/6 rounded-lg shadow-lg bg-white py-4 px-5 ml-10 mt-10"
+      className="w-max rounded-lg shadow-lg bg-white py-4 px-5"
       onSubmit={handleSubmit(submitFun)}
     >
       <div className="w-full flex items-center justify-center h-20">
-        <h1 className="text-3xl font-['Poppins'] font-semibold">Book Ticket</h1>
+        <h1 className="text-3xl font-['Poppins'] font-semibold">Search Your Train</h1>
       </div>
-      <div className="flex items-center justify-start w-full py-2 px-8">
+      <div className="flex  justify-start w-full py-2 px-8 flex-col">
         <select
           {...register("source")}
           defaultValue={-1}
           placeholder={"Source"}
-          className="text-xl w-72 font-medium font-['Poppins'] bg-blue-100 text-gray-500 shadow-sm px-2 py-2 rounded-sm mr-10"
+          className="text-xl w-72 font-medium font-['Poppins'] bg-blue-100 text-gray-500 shadow-sm px-2 py-2 rounded-sm mt-2 mb-2"
+          onChange={(e) => setSource(e.target.value)}
         >
           <option value={-1}>Source</option>
           {stations.map((ele, idx) => {
@@ -67,7 +99,8 @@ function Ticket({ setTrains }) {
         <select
           {...register("destination")}
           defaultValue={-1}
-          className="text-xl w-72 font-medium font-['Poppins'] bg-blue-100 text-gray-500 shadow-sm px-2 py-2 rounded-sm mr-10"
+          className="text-xl w-72 font-medium font-['Poppins'] bg-blue-100 text-gray-500 shadow-sm px-2 py-2 rounded-sm mt-2 mb-2"
+          onChange={(e) => setDestination(e.target.value)}
         >
           <option value={-1}>Destination</option>
           {stations.map((ele, idx) => {
@@ -79,11 +112,9 @@ function Ticket({ setTrains }) {
           })}
         </select>
         {errors.destination && <span>{errors.destination.message}</span>}
-      </div>
-      <div className="flex items-center justify-start w-full py-2 px-8">
         <input
           placeholder="Date"
-          className={`text-xl w-72 font-medium font-['Poppins'] bg-blue-100 text-gray-500 shadow-sm px-2 py-2 rounded-sm mr-10 ${
+          className={`text-xl w-72 font-medium font-['Poppins'] bg-blue-100 text-gray-500 shadow-sm px-2 py-2 rounded-sm mt-2 mb-2 ${
             errors.date && `active:ring-2 ring-red-500`
           }`}
           type="date"
@@ -95,7 +126,7 @@ function Ticket({ setTrains }) {
         )}
         <select
           defaultValue={"Class"}
-          className="text-xl w-72 font-medium font-['Poppins'] bg-blue-100 text-gray-500 shadow-sm px-2 py-2 rounded-sm mr-10"
+          className="text-xl w-72 font-medium font-['Poppins'] bg-blue-100 text-gray-500 shadow-sm px-2 py-2 rounded-sm mt-2 mb-2"
         >
           <option selected>Select Class</option>
           <option>AC chair</option>
@@ -105,11 +136,9 @@ function Ticket({ setTrains }) {
           <option>AC chair</option>
           <option>AC Bus</option>
         </select>
-      </div>
-      <div className="flex items-center justify-start w-full py-2 px-8">
         <select
           defaultValue={"Class"}
-          className="text-xl w-72 font-medium font-['Poppins'] bg-blue-100 text-gray-500 shadow-sm px-2 py-2 rounded-sm"
+          className="text-xl w-72 font-medium font-['Poppins'] bg-blue-100 text-gray-500 shadow-sm px-2 py-2 rounded-sm mt-2 mb-2"
         >
           <option selected>General</option>
           <option>Ladies</option>

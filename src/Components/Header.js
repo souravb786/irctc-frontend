@@ -32,7 +32,7 @@ const Header = () => {
         {auth.user && (
           <div className="absolute right-0  font-['Poppins'] w-1/3  flex items-center justify-end px-6">
             <Link
-              to="/user"
+              to="/user/profile"
               className="px-2 py-2 w-30 rounded-full ml-2 mr-2 text-center hover:bg-blue-500 hover:text-white cursor-pointer select-none"
             >
               My Profile
